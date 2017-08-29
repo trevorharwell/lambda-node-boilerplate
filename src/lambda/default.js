@@ -1,9 +1,11 @@
 import { runAsSaga } from 'utils/lambda';
+import { call } from 'redux-saga/effects';
+import createGithubGateway from 'gateway/createGithubGateway';
 
-export const defaultHandler = function* () {
-  return {
-    text: 'something',
-  };
-};
+export function* defaultSaga() {
+  const { getRepositoryPage } = yield call(createGithubGateway);
+  const repositories = yield call(getRepositoryPage);
+  return repositories;
+}
 
-export const handler = runAsSaga(defaultHandler);
+export const handler = runAsSaga(defaultSaga);

@@ -1,11 +1,21 @@
-import { defaultHandler } from '../default';
+import { call } from 'redux-saga/effects';
+import sinon from 'sinon';
+import createGithubGateway from 'gateway/createGithubGateway';
+import { defaultSaga } from '../default';
 
-describe('defaultHandler', () => {
+/* eslint-disable redux-saga/yield-effects */
+
+describe('defaultSaga', () => {
   let saga;
   beforeEach(() => {
-    saga = defaultHandler();
+    saga = defaultSaga();
   });
   it('runs without error', () => {
-    expect(saga.next().value).toEqual({ text: 'something' });
+    const getRepositoryPage = sinon.stub().returnsPromise();
+    const response = [];
+
+    expect(saga.next().value).toEqual(call(createGithubGateway));
+    expect(saga.next({ getRepositoryPage }).value).toEqual(call(getRepositoryPage));
+    expect(saga.next(response).value).toEqual(response);
   });
 });
