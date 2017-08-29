@@ -3,7 +3,6 @@
  */
 
 const path = require('path');
-const nodeExternals = require('webpack-node-externals');
 
 module.exports = (options) => ({
   entry: options.entry,
@@ -11,7 +10,9 @@ module.exports = (options) => ({
     libraryTarget: 'commonjs2',
     path: path.resolve(process.cwd(), 'build'),
   }, options.output), // Merge with env dependent settings
-  externals: [nodeExternals()],
+  externals: {
+    'aws-sdk': 'aws-sdk',
+  },
   module: {
     loaders: [{
       test: /\.js$/, // Transform all .js files required somewhere with Babel

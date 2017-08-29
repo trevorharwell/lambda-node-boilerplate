@@ -16,7 +16,7 @@ module.exports = require('./webpack.base')({
       const ext = path.extname(filePath);
       if (ext === '.js') {
         const name = filePath.slice(0, -ext.length);
-        entry[name] = path.join(lambdaFolderPath, filePath);
+        entry[name] = ['babel-polyfill', path.join(lambdaFolderPath, filePath)];
       }
     });
 
