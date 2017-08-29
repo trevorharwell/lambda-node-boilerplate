@@ -70,4 +70,18 @@ describe('runAsSaga', () => {
       done();
     });
   });
+  it('calls callback with error from error handler', (done) => {
+    const thrownError = new Error();
+    const subError = new Error();
+    const errorHandler = sinon.stub().throws(subError);
+    const saga = function* () { throw thrownError; };
+    const wrappedSaga = runAsSaga(saga, { errorHandler });
+    const event = { event: true };
+    const context = { context: true };
+
+    wrappedSaga(event, context, (error) => {
+      expect(error).toBe(subError);
+      done();
+    });
+  });
 });

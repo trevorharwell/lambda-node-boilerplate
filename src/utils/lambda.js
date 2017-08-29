@@ -22,8 +22,12 @@ export const runAsSaga = (saga, { initialize, format, errorHandler } = {}) => {
       })
       .catch(async (error) => {
         if (errorHandler) {
-          const result = await errorHandler(error);
-          callback(null, result);
+          try {
+            const result = await errorHandler(error);
+            callback(null, result);
+          } catch (subError) {
+            callback(subError);
+          }
         } else {
           callback(error);
         }
