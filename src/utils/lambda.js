@@ -11,31 +11,29 @@ export const toSaga = (saga, { initializeEach, initialize, format, errorHandler 
     if (initializeEach) {
       yield call(initializeEach, ...args);
     }
-    const response = yield call(saga, ...args);
+    let response;
+    try {
+      response = yield call(saga, ...args);
+      if (format) {
+        response = yield call(format, response);
+      }
+    } catch (error) {
+      if (errorHandler) {
+        response = yield call(errorHandler, error);
+      } else {
+        throw error;
+      }
+    }
     return response;
   }
   return (event, context, callback) => {
     runSaga({ context }, wrapperSaga, event, context)
       .done
-      .then(async (result) => {
-        if (format) {
-          const formattedResult = await format(result);
-          callback(null, formattedResult);
-        } else {
-          callback(null, result);
-        }
+      .then((result) => {
+        callback(null, result);
       })
-      .catch(async (error) => {
-        if (errorHandler) {
-          try {
-            const result = await errorHandler(error);
-            callback(null, result);
-          } catch (subError) {
-            callback(subError);
-          }
-        } else {
-          callback(error);
-        }
+      .catch((error) => {
+        callback(error);
       });
   };
 };
