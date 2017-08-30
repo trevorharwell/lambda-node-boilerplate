@@ -19,7 +19,8 @@
     "build": "webpack --config internals/webpack/webpack.prod.js --color --progress",
     "lint": "npm run lint:js",
     "lint:eslint": "eslint --ignore-path .gitignore --ignore-pattern internals/scripts --ignore-pattern build",
-    "lint:js": "npm run lint:eslint -- . "
+    "lint:js": "npm run lint:eslint -- . ",
+    "open:coverage": "open ./coverage/lcov-report/index.html"
   },
   "author": {
     "name": "Trevor Harwell"
