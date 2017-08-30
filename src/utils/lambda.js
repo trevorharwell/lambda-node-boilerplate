@@ -27,6 +27,7 @@ export const toSaga = (saga, { initializeEach, initialize, format, errorHandler 
     return response;
   }
   return (event, context, callback) => {
+    context.callbackWaitsForEmptyEventLoop = false;
     runSaga({ context }, wrapperSaga, event, context)
       .done
       .then((result) => {
