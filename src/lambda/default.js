@@ -2,11 +2,14 @@ import { toSaga } from 'utils/lambda';
 import { call } from 'redux-saga/effects';
 import { consume } from 'di/effects';
 import { initialize } from 'core/applicationContext';
+import createHttpResponse from 'model/createHttpResponse';
 
 export function* defaultSaga() {
   const { getRepositoryPage } = yield consume('githubGateway');
   const repositories = yield call(getRepositoryPage);
-  return repositories;
+  const response = yield call(createHttpResponse, repositories, 200);
+
+  return response;
 }
 
-export const handler = toSaga(defaultSaga, { initialize });
+export const handle = toSaga(defaultSaga, { initialize });

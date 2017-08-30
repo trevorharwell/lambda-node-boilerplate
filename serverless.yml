@@ -1,0 +1,19 @@
+service: lambda-node-boilerplate
+
+frameworkVersion: ">=1.1.0 <2.0.0"
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+
+plugins:
+  - serverless-webpack
+
+custom:
+  webpack: ./internals/webpack/webpack.prod.js
+
+functions:
+  default:
+    handler: src/lambda/default.handle
+    events:
+      - http: get /
