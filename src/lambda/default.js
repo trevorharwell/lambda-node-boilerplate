@@ -1,11 +1,12 @@
-import { runAsSaga } from 'utils/lambda';
+import { toSaga } from 'utils/lambda';
 import { call } from 'redux-saga/effects';
-import createGithubGateway from 'gateway/createGithubGateway';
+import { consume } from 'di/effects';
+import { initialize } from 'core/applicationContext';
 
 export function* defaultSaga() {
-  const { getRepositoryPage } = yield call(createGithubGateway);
+  const { getRepositoryPage } = yield consume('githubGateway');
   const repositories = yield call(getRepositoryPage);
   return repositories;
 }
 
-export const handler = runAsSaga(defaultSaga);
+export const handler = toSaga(defaultSaga, { initialize });

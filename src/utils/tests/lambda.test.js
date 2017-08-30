@@ -1,11 +1,11 @@
 import sinon from 'sinon';
 
-import { runAsSaga } from '../lambda';
+import { toSaga } from '../lambda';
 
-describe('runAsSaga', () => {
+describe('toSaga', () => {
   it('calls callback with saga response', (done) => {
     const saga = function* () { return 'hello'; };
-    const wrappedSaga = runAsSaga(saga);
+    const wrappedSaga = toSaga(saga);
     const event = { event: true };
     const context = { context: true };
 
@@ -18,7 +18,7 @@ describe('runAsSaga', () => {
   it('calls callback with formatted saga response', (done) => {
     const saga = function* () { return 'hello'; };
     const format = sinon.stub().returns('nope');
-    const wrappedSaga = runAsSaga(saga, { format });
+    const wrappedSaga = toSaga(saga, { format });
     const event = { event: true };
     const context = { context: true };
 
@@ -29,15 +29,29 @@ describe('runAsSaga', () => {
       done();
     });
   });
-  it('calls initialize', (done) => {
+  it('calls initializeEach', (done) => {
     const saga = function* () { return 'hello'; };
-    const initialize = sinon.spy();
-    const wrappedSaga = runAsSaga(saga, { initialize });
+    const initializeEach = sinon.spy();
+    const wrappedSaga = toSaga(saga, { initializeEach });
     const event = { event: true };
     const context = { context: true };
 
     wrappedSaga(event, context, (error, result) => {
-      sinon.assert.calledWith(initialize, event, context);
+      sinon.assert.calledWith(initializeEach, event, context);
+      expect(error).toBeNull();
+      expect(result).toEqual('hello');
+      done();
+    });
+  });
+  it('calls initialize', (done) => {
+    const saga = function* () { return 'hello'; };
+    const initialize = sinon.spy();
+    const wrappedSaga = toSaga(saga, { initialize });
+    const event = { event: true };
+    const context = { context: true };
+
+    wrappedSaga(event, context, (error, result) => {
+      sinon.assert.calledWith(initialize);
       expect(error).toBeNull();
       expect(result).toEqual('hello');
       done();
@@ -46,7 +60,7 @@ describe('runAsSaga', () => {
   it('calls callback with error', (done) => {
     const thrownError = new Error();
     const saga = function* () { throw thrownError; };
-    const wrappedSaga = runAsSaga(saga);
+    const wrappedSaga = toSaga(saga);
     const event = { event: true };
     const context = { context: true };
 
@@ -59,7 +73,7 @@ describe('runAsSaga', () => {
     const thrownError = new Error();
     const errorHandler = sinon.stub().returns('nope');
     const saga = function* () { throw thrownError; };
-    const wrappedSaga = runAsSaga(saga, { errorHandler });
+    const wrappedSaga = toSaga(saga, { errorHandler });
     const event = { event: true };
     const context = { context: true };
 
@@ -75,7 +89,7 @@ describe('runAsSaga', () => {
     const subError = new Error();
     const errorHandler = sinon.stub().throws(subError);
     const saga = function* () { throw thrownError; };
-    const wrappedSaga = runAsSaga(saga, { errorHandler });
+    const wrappedSaga = toSaga(saga, { errorHandler });
     const event = { event: true };
     const context = { context: true };
 

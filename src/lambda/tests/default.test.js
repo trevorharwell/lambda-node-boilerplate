@@ -1,9 +1,8 @@
-import { call } from 'redux-saga/effects';
-import sinon from 'sinon';
-import createGithubGateway from 'gateway/createGithubGateway';
-import { defaultSaga } from '../default';
-
 /* eslint-disable redux-saga/yield-effects */
+import sinon from 'sinon';
+import { call } from 'redux-saga/effects';
+import { consume } from 'di/effects';
+import { defaultSaga } from '../default';
 
 describe('defaultSaga', () => {
   let saga;
@@ -14,7 +13,7 @@ describe('defaultSaga', () => {
     const getRepositoryPage = sinon.stub().returnsPromise();
     const response = [];
 
-    expect(saga.next().value).toEqual(call(createGithubGateway));
+    expect(saga.next().value).toEqual(consume('githubGateway'));
     expect(saga.next({ getRepositoryPage }).value).toEqual(call(getRepositoryPage));
     expect(saga.next(response).value).toEqual(response);
   });

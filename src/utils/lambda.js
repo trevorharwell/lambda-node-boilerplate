@@ -1,10 +1,15 @@
 import { runSaga } from 'redux-saga';
 import { call } from 'redux-saga/effects';
 
-export const runAsSaga = (saga, { initialize, format, errorHandler } = {}) => {
+export const toSaga = (saga, { initializeEach, initialize, format, errorHandler } = {}) => {
+  let didInitialize = false;
   function* wrapperSaga(...args) {
-    if (initialize) {
-      yield call(initialize, ...args);
+    if (!didInitialize && initialize) {
+      yield call(initialize);
+    }
+    didInitialize = true;
+    if (initializeEach) {
+      yield call(initializeEach, ...args);
     }
     const response = yield call(saga, ...args);
     return response;
