@@ -3,7 +3,7 @@ import { call } from 'redux-saga/effects';
 import { consume } from 'di/effects';
 import { initialize } from 'core/applicationContext';
 import createHttpResponse from 'model/createHttpResponse';
-import createHttpErrorResponse from 'model/createHttpErrorResponse';
+import errorHandler from 'model/createHttpErrorResponse';
 
 export function* defaultSaga() {
   const { getRepositoryPage } = yield consume('githubGateway');
@@ -15,5 +15,5 @@ export function* defaultSaga() {
 
 export const handle = toSaga(defaultSaga, {
   initialize,
-  errorHandler: createHttpErrorResponse,
+  errorHandler,
 });

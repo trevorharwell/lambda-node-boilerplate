@@ -27,7 +27,7 @@ export const toSaga = (saga, { initializeEach, initialize, format, errorHandler 
     return response;
   }
   return (event, context, callback) => {
-    context.callbackWaitsForEmptyEventLoop = false;
+    context.callbackWaitsForEmptyEventLoop = false; // eslint-disable-line no-param-reassign
     runSaga({ context }, wrapperSaga, event, context)
       .done
       .then((result) => {
